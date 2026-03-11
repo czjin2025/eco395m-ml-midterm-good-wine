@@ -1,4 +1,3 @@
-# code/jin_xgboost_model.py
 import sys
 import os
 import pandas as pd
@@ -8,24 +7,37 @@ import joblib
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-# Import from main.py
-from main import load_and_preprocess_data, evaluate_model
+# Import cross_validate_model from main.py instead of load_and_preprocess_data and evaluate_model
+from main import cross_validate_model
 from xgboost import XGBRegressor
+from sklearn.preprocessing import StandardScaler
 
-# Create models folder if it doesn't exist
+# Create folders if they don't exist
 os.makedirs('models', exist_ok=True)
 os.makedirs('results', exist_ok=True)
 
 # Store all results
 all_results = []
 
-# 1. RED WINE
+# 1. RED WINE - XGBOOST WITH CROSS VALIDATION
 print("=" * 60)
-print("RED WINE - XGBOOST REGRESSION")
+print("RED WINE - XGBOOST WITH CROSS VALIDATION")
 print("=" * 60)
 
-# Load red wine data
-X_train_r, X_test_r, y_train_r, y_test_r, features_r = load_and_preprocess_data('red')
+# Read data directly, don't use load_and_preprocess_data
+df_red = pd.read_csv('data/winequality-red.csv', sep=';')
+X_red = df_red.drop('quality', axis=1)
+y_red = df_red['quality']
+features_red = X_red.columns.tolist()
+
+print(f"\n=== RED WINE ===")
+print(f"Dataset shape: {df_red.shape}")
+print(f"Quality range: {y_red.min()} - {y_red.max()}")
+print(f"Features: {features_red}")
+
+# Standardize features manually
+scaler_red = StandardScaler()
+X_red_scaled = scaler_red.fit_transform(X_red)
 
 # Create XGBoost regressor
 xgb_red = XGBRegressor(
@@ -36,42 +48,51 @@ xgb_red = XGBRegressor(
     verbosity=0
 )
 
-# Train the model
-print("\nTraining XGBoost model...")
-xgb_red.fit(X_train_r, y_train_r)
+# Use cross validation function (5-fold, 1 repeat for now)
+print("\nPerforming cross validation...")
+result_red = cross_validate_model(xgb_red, X_red_scaled, y_red, 'Red', 'XGBoost', cv_folds=5, n_repeats=1)
+all_results.append(result_red)
 
-# Make predictions
-y_pred_r = xgb_red.predict(X_test_r)
-
-# Evaluate using our function
-result_r = evaluate_model(y_test_r, y_pred_r, 'XGBoost', 'Red')
-all_results.append(result_r)
+# Train on full data for feature importance and model saving
+print("\nTraining on full dataset for feature importance...")
+xgb_red.fit(X_red_scaled, y_red)
 
 # Feature importance
-importance_r = pd.DataFrame({
-    'feature': features_r,
+importance_red = pd.DataFrame({
+    'feature': features_red,
     'importance': xgb_red.feature_importances_
 }).sort_values('importance', ascending=False)
 
-print("\nTop 5 most important features:")
-print(importance_r.head(5).to_string(index=False))
+print("\nTop 5 most important features (trained on full dataset):")
+print(importance_red.head(5).to_string(index=False))
 
 # Save feature importance
-importance_r.to_csv('results/xgb_importance_red.csv', index=False)
+importance_red.to_csv('results/xgb_importance_red.csv', index=False)
 print(f"\nFeature importance saved to results/xgb_importance_red.csv")
 
 # Save the model
 joblib.dump(xgb_red, 'models/xgboost_red.pkl')
 print(f"Model saved to models/xgboost_red.pkl")
 
-
-# 2. WHITE WINE
+# 2. WHITE WINE - XGBOOST WITH CROSS VALIDATION
 print("\n" + "=" * 60)
-print("WHITE WINE - XGBOOST REGRESSION")
+print("WHITE WINE - XGBOOST WITH CROSS VALIDATION")
 print("=" * 60)
 
-# Load white wine data
-X_train_w, X_test_w, y_train_w, y_test_w, features_w = load_and_preprocess_data('white')
+# Read data directly
+df_white = pd.read_csv('data/winequality-white.csv', sep=';')
+X_white = df_white.drop('quality', axis=1)
+y_white = df_white['quality']
+features_white = X_white.columns.tolist()
+
+print(f"\n=== WHITE WINE ===")
+print(f"Dataset shape: {df_white.shape}")
+print(f"Quality range: {y_white.min()} - {y_white.max()}")
+print(f"Features: {features_white}")
+
+# Standardize features manually
+scaler_white = StandardScaler()
+X_white_scaled = scaler_white.fit_transform(X_white)
 
 # Create XGBoost regressor
 xgb_white = XGBRegressor(
@@ -82,28 +103,26 @@ xgb_white = XGBRegressor(
     verbosity=0
 )
 
-# Train the model
-print("\nTraining XGBoost model...")
-xgb_white.fit(X_train_w, y_train_w)
+# Use cross validation function
+print("\nPerforming cross validation...")
+result_white = cross_validate_model(xgb_white, X_white_scaled, y_white, 'White', 'XGBoost', cv_folds=5, n_repeats=1)
+all_results.append(result_white)
 
-# Make predictions
-y_pred_w = xgb_white.predict(X_test_w)
-
-# Evaluate using our function
-result_w = evaluate_model(y_test_w, y_pred_w, 'XGBoost', 'White')
-all_results.append(result_w)
+# Train on full data for feature importance and model saving
+print("\nTraining on full dataset for feature importance...")
+xgb_white.fit(X_white_scaled, y_white)
 
 # Feature importance
-importance_w = pd.DataFrame({
-    'feature': features_w,
+importance_white = pd.DataFrame({
+    'feature': features_white,
     'importance': xgb_white.feature_importances_
 }).sort_values('importance', ascending=False)
 
-print("\nTop 5 most important features:")
-print(importance_w.head(5).to_string(index=False))
+print("\nTop 5 most important features (trained on full dataset):")
+print(importance_white.head(5).to_string(index=False))
 
 # Save feature importance
-importance_w.to_csv('results/xgb_importance_white.csv', index=False)
+importance_white.to_csv('results/xgb_importance_white.csv', index=False)
 print(f"\nFeature importance saved to results/xgb_importance_white.csv")
 
 # Save the model
@@ -112,12 +131,13 @@ print(f"Model saved to models/xgboost_white.pkl")
 
 # 3. SUMMARY
 print("\n" + "=" * 60)
-print("SUMMARY - ALL RESULTS")
+print("SUMMARY - CROSS VALIDATION RESULTS")
 print("=" * 60)
 
 results_df = pd.DataFrame(all_results)
-print(results_df.to_string(index=False))
+# Display results with standard deviation
+print(results_df[['model', 'dataset', 'MAD', 'MAD_std', 'MSE', 'RMSE', 'cv_method']].to_string(index=False))
 
 # Save results to CSV
-results_df.to_csv('results/xgboost_results.csv', index=False)
-print(f"\nResults saved to results/xgboost_results.csv")
+results_df.to_csv('results/xgboost_cv_results.csv', index=False)
+print(f"\nResults saved to results/xgboost_cv_results.csv")
