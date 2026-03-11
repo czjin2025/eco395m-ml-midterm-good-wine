@@ -68,56 +68,6 @@ def cross_validate_model(model, X, y, wine_type, model_name, cv_folds=5, n_repea
     print(f"RMSE: {avg_rmse:.4f}")
     
     return {
-    'model': model_name,
-    'dataset': wine_type,
-    'MAD': avg_mad,
-    'MAD_std': std_mad,
-    'MSE': avg_mse,
-    'RMSE': avg_rmse, 
-    'cv_method': f'{cv_folds}-fold' + (f' x {n_repeats}' if n_repeats > 1 else '')
-}
-
-# Cross Validation Functions
-def cross_validate_model(model, X, y, wine_type, model_name, cv_folds=5, n_repeats=1):
-    # Define scorers
-    mad_scorer = make_scorer(mean_absolute_error)
-    mse_scorer = make_scorer(mean_squared_error)
-    
-    all_mad = []
-    all_mse = []
-    all_rmse = []
-    
-    print(f"\nPerforming {cv_folds}-fold cross validation" + 
-          (f" ({n_repeats} repeats)" if n_repeats > 1 else ""))
-    
-    for repeat in range(n_repeats):
-        if n_repeats > 1:
-            print(f"  Repeat {repeat + 1}/{n_repeats}")
-        
-        # Create KFold with different random state for each repeat
-        cv = KFold(n_splits=cv_folds, shuffle=True, random_state=42 + repeat)
-        
-        # Calculate scores
-        mad_scores = cross_val_score(model, X, y, cv=cv, scoring=mad_scorer)
-        mse_scores = cross_val_score(model, X, y, cv=cv, scoring=mse_scorer)
-        rmse_scores = np.sqrt(mse_scores)
-        
-        all_mad.extend(mad_scores)
-        all_mse.extend(mse_scores)
-        all_rmse.extend(rmse_scores)
-    
-    # Calculate averages
-    avg_mad = np.mean(all_mad)
-    avg_mse = np.mean(all_mse)
-    avg_rmse = np.mean(all_rmse)
-    std_mad = np.std(all_mad)
-    
-    print(f"\n{model_name} - {wine_type} (CV Results)")
-    print(f"MAD:  {avg_mad:.4f} (+/- {std_mad * 2:.4f})")
-    print(f"MSE:  {avg_mse:.4f}")
-    print(f"RMSE: {avg_rmse:.4f}")
-    
-    return {
         'model': model_name,
         'dataset': wine_type,
         'MAD': avg_mad,
