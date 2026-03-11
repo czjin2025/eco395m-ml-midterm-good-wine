@@ -26,3 +26,10 @@ desktop.ini
 *.log
 *.tmp
 *.temp
+
+# Results files
+results/
+*.csv
+
+# Models folder - not needed for reproducibility
+models/
