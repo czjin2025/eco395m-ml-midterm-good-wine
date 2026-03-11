@@ -1,121 +1,100 @@
-# code/jin_linear_model.py
 import sys
 import os
 import pandas as pd
 import numpy as np
 import joblib
 
-# Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-# Import from main.py
-from main import load_and_preprocess_data, evaluate_model
+from main import load_and_standardize_data, cross_validate_model
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
 
-# Store all results
+os.makedirs('models', exist_ok=True)
+os.makedirs('results', exist_ok=True)
+
 all_results = []
 
-# 1. RED WINE
+# 1. RED WINE - LINEAR REGRESSION
 print("=" * 60)
-print("RED WINE - LINEAR REGRESSION")
+print("RED WINE - LINEAR REGRESSION WITH CROSS VALIDATION")
 print("=" * 60)
 
-# Load red wine data
-X_train_r, X_test_r, y_train_r, y_test_r, features_r = load_and_preprocess_data('red')
+X_red, y_red, features_red = load_and_standardize_data('red')
 
-# Create linear regression object
 lr_red = LinearRegression()
 
-# Train the model
-lr_red.fit(X_train_r, y_train_r)
+result_red = cross_validate_model(lr_red, X_red, y_red, 'Red', 'Linear Regression', cv_folds=5, n_repeats=1)
+all_results.append(result_red)
 
-# Make predictions
-y_pred_r = lr_red.predict(X_test_r)
+lr_red.fit(X_red, y_red)
 
-# Evaluate using our function
-result_r = evaluate_model(y_test_r, y_pred_r, 'Linear Regression', 'Red')
-all_results.append(result_r)
-
-# The coefficients
-print("\nCoefficients:")
-coef_df_r = pd.DataFrame({
-    'feature': features_r,
+print("\nCoefficients (trained on full dataset):")
+coef_df_red = pd.DataFrame({
+    'feature': features_red,
     'coefficient': lr_red.coef_
 }).sort_values('coefficient', key=abs, ascending=False)
-print(coef_df_r.to_string(index=False))
+print(coef_df_red.head(10).to_string(index=False))
 
-# Optional: statsmodels summary for more statistics
-X_train_r_sm = sm.add_constant(X_train_r)
-model_r_sm = sm.OLS(y_train_r, X_train_r_sm).fit()
+coef_df_red.to_csv('results/linear_coef_red.csv', index=False)
+print(f"\nCoefficients saved to results/linear_coef_red.csv")
+
+X_red_sm = sm.add_constant(X_red)
+model_red_sm = sm.OLS(y_red, X_red_sm).fit()
 print("\n" + "=" * 40)
-print("Red Wine - Model Summary")
+print("Red Wine - Model Summary (Full Dataset)")
 print("=" * 40)
-print(f"R-squared: {model_r_sm.rsquared:.4f}")
-print(f"Adjusted R-squared: {model_r_sm.rsquared_adj:.4f}")
-print(f"F-statistic: {model_r_sm.fvalue:.2f}")
-print(f"Prob (F-statistic): {model_r_sm.f_pvalue:.4e}")
+print(f"R-squared: {model_red_sm.rsquared:.4f}")
+print(f"Adjusted R-squared: {model_red_sm.rsquared_adj:.4f}")
+print(f"F-statistic: {model_red_sm.fvalue:.2f}")
+print(f"Prob (F-statistic): {model_red_sm.f_pvalue:.4e}")
 
-# Create models directory if it doesn't exist
-os.makedirs('models', exist_ok=True)
-
-# Save the model
 joblib.dump(lr_red, 'models/linear_regression_red.pkl')
 print(f"\nModel saved to models/linear_regression_red.pkl")
 
-# 2. WHITE WINE
+# 2. WHITE WINE - LINEAR REGRESSION
 print("\n" + "=" * 60)
-print("WHITE WINE - LINEAR REGRESSION")
+print("WHITE WINE - LINEAR REGRESSION WITH CROSS VALIDATION")
 print("=" * 60)
 
-# Load white wine data
-X_train_w, X_test_w, y_train_w, y_test_w, features_w = load_and_preprocess_data('white')
+X_white, y_white, features_white = load_and_standardize_data('white')
 
-# Create linear regression object
 lr_white = LinearRegression()
 
-# Train the model
-lr_white.fit(X_train_w, y_train_w)
+result_white = cross_validate_model(lr_white, X_white, y_white, 'White', 'Linear Regression', cv_folds=5, n_repeats=1)
+all_results.append(result_white)
 
-# Make predictions
-y_pred_w = lr_white.predict(X_test_w)
+lr_white.fit(X_white, y_white)
 
-# Evaluate using our function
-result_w = evaluate_model(y_test_w, y_pred_w, 'Linear Regression', 'White')
-all_results.append(result_w)
-
-# The coefficients
-print("\nCoefficients:")
-coef_df_w = pd.DataFrame({
-    'feature': features_w,
+print("\nCoefficients (trained on full dataset):")
+coef_df_white = pd.DataFrame({
+    'feature': features_white,
     'coefficient': lr_white.coef_
 }).sort_values('coefficient', key=abs, ascending=False)
-print(coef_df_w.to_string(index=False))
+print(coef_df_white.head(10).to_string(index=False))
 
-# Optional: statsmodels summary for more statistics
-X_train_w_sm = sm.add_constant(X_train_w)
-model_w_sm = sm.OLS(y_train_w, X_train_w_sm).fit()
+coef_df_white.to_csv('results/linear_coef_white.csv', index=False)
+print(f"\nCoefficients saved to results/linear_coef_white.csv")
+
+X_white_sm = sm.add_constant(X_white)
+model_white_sm = sm.OLS(y_white, X_white_sm).fit()
 print("\n" + "=" * 40)
-print("White Wine - Model Summary")
+print("White Wine - Model Summary (Full Dataset)")
 print("=" * 40)
-print(f"R-squared: {model_w_sm.rsquared:.4f}")
-print(f"Adjusted R-squared: {model_w_sm.rsquared_adj:.4f}")
-print(f"F-statistic: {model_w_sm.fvalue:.2f}")
-print(f"Prob (F-statistic): {model_w_sm.f_pvalue:.4e}")
+print(f"R-squared: {model_white_sm.rsquared:.4f}")
+print(f"Adjusted R-squared: {model_white_sm.rsquared_adj:.4f}")
+print(f"F-statistic: {model_white_sm.fvalue:.2f}")
+print(f"Prob (F-statistic): {model_white_sm.f_pvalue:.4e}")
 
-# Save the model
 joblib.dump(lr_white, 'models/linear_regression_white.pkl')
 print(f"\nModel saved to models/linear_regression_white.pkl")
 
-# 3. SUMMARY
 print("\n" + "=" * 60)
-print("SUMMARY - ALL RESULTS")
+print("SUMMARY - CROSS VALIDATION RESULTS")
 print("=" * 60)
 
 results_df = pd.DataFrame(all_results)
-print(results_df.to_string(index=False))
+print(results_df[['model', 'dataset', 'MAD', 'MAD_std', 'MSE', 'RMSE', 'cv_method']].to_string(index=False))
 
-# Save results to CSV
-# Save results to CSV
-results_df.to_csv('results/linear_results.csv', index=False)
-print(f"\nResults saved to code/linear_results.csv")
+results_df.to_csv('results/linear_cv_results.csv', index=False)
+print(f"\nResults saved to results/linear_cv_results.csv")
