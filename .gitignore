@@ -2,34 +2,28 @@
 .venv/
 venv/
 ENV/
-env/
 
 # Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.pycache
 
 # IDE settings
 .vscode/
 .idea/
-*.swp
-*.swo
 
 # OS files
 .DS_Store
 Thumbs.db
-desktop.ini
 
 # Logs and temporary files
 *.log
 *.tmp
 *.temp
 
-# Results files
-results/
-*.csv
-
-# Models folder - not needed for reproducibility
+# Models and results - not needed for reproducibility
 models/
+results/
+*.pkl
+*.csv
