@@ -17,7 +17,12 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Models and results
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Models and results - not needed for reproducibility
 models/
 results/
 *.pkl
