@@ -9,7 +9,7 @@ This project aims to predict wine quality scores based on physicochemical proper
 ## 2. Data Understanding
 
 ### 2.1. Source and Collection
-The dataset is the publicly available **Wine Quality Dataset** from the UCI Machine Learning Repository. It contains physicochemical and sensory data for Vinho Verde wine samples from Portugal. The data was collected between 2004 and 2007 by the official certification entity (CVRVV) and represents a large, real-world sample.
+The dataset is the publicly available **Wine Quality Dataset** from UCI. It contains physicochemical and sensory data for Vinho Verde wine samples from Portugal. The data was collected between 2004 and 2007 by the official certification entity (CVRVV) and represents a large, real-world sample.
 
 ### 2.2. Data Description
 We analyze red and white wine variants separately due to their distinct characteristics. The datasets are clean with no missing values.
