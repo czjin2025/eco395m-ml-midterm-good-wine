@@ -16,6 +16,7 @@ os.makedirs('results', exist_ok=True)
 all_results = []
 
 print("=" * 60)
+print("Red Wine: Random Forest with Cross Validation")
 print("=" * 60)
 
 df_red = pd.read_csv('data/winequality-red.csv', sep=';')
@@ -23,6 +24,7 @@ X_red = df_red.drop('quality', axis=1)
 y_red = df_red['quality']
 features_red = X_red.columns.tolist()
 
+print(f"\nRed Wine”)
 print(f"Dataset shape: {df_red.shape}")
 print(f"Quality range: {y_red.min()} - {y_red.max()}")
 print(f"Features: {features_red}")
