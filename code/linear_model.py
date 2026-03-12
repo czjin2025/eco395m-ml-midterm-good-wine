@@ -36,7 +36,7 @@ X_red_scaled = scaler_red.fit_transform(X_red)
 
 lr_red = LinearRegression()
 
-result_red = cross_validate_model(lr_red, X_red_scaled, y_red, 'Red', 'Linear Regression', cv_folds=5, n_repeats=1)
+result_red = cross_validate_model(lr_red, X_red_scaled, y_red, 'Red', 'Linear Regression', cv_folds=5)
 all_results.append(result_red)
 
 lr_red.fit(X_red_scaled, y_red)
@@ -84,7 +84,7 @@ X_white_scaled = scaler_white.fit_transform(X_white)
 
 lr_white = LinearRegression()
 
-result_white = cross_validate_model(lr_white, X_white_scaled, y_white, 'White', 'Linear Regression', cv_folds=5, n_repeats=1)
+result_white = cross_validate_model(lr_white, X_white_scaled, y_white, 'White', 'Linear Regression', cv_folds=5)
 all_results.append(result_white)
 
 lr_white.fit(X_white_scaled, y_white)
