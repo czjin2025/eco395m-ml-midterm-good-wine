@@ -30,7 +30,7 @@ xgb_red = XGBRegressor(
 )
 
 print("\nPerforming cross validation...")
-result_red = cross_validate_model(xgb_red, X_red, y_red, 'Red', 'XGBoost', cv_folds=5, n_repeats=1)
+result_red = cross_validate_model(xgb_red, X_red, y_red, 'Red', 'XGBoost', cv_folds=5)
 all_results.append(result_red)
 
 print("\nTraining on full dataset for feature importance...")
@@ -66,7 +66,7 @@ xgb_white = XGBRegressor(
 )
 
 print("\nPerforming cross validation...")
-result_white = cross_validate_model(xgb_white, X_white, y_white, 'White', 'XGBoost', cv_folds=5, n_repeats=1)
+result_white = cross_validate_model(xgb_white, X_white, y_white, 'White', 'XGBoost', cv_folds=5)
 all_results.append(result_white)
 
 print("\nTraining on full dataset for feature importance...")
