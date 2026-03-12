@@ -6,7 +6,7 @@ import joblib
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from main import cross_validate_model
+from main import load_and_standardize_data, cross_validate_model
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 import statsmodels.api as sm
@@ -16,30 +16,19 @@ os.makedirs('results', exist_ok=True)
 
 all_results = []
 
-# 1. RED WINE 
+# 1. RED WINE - LINEAR REGRESSION
 print("=" * 60)
 print("RED WINE - LINEAR REGRESSION WITH CROSS VALIDATION")
 print("=" * 60)
 
-df_red = pd.read_csv('data/winequality-red.csv', sep=';')
-X_red = df_red.drop('quality', axis=1)
-y_red = df_red['quality']
-features_red = X_red.columns.tolist()
-
-print(f"\n=== RED WINE ===")
-print(f"Dataset shape: {df_red.shape}")
-print(f"Quality range: {y_red.min()} - {y_red.max()}")
-print(f"Features: {features_red}")
-
-scaler_red = StandardScaler()
-X_red_scaled = scaler_red.fit_transform(X_red)
+X_red, y_red, features_red = load_and_standardize_data('red')
 
 lr_red = LinearRegression()
 
-result_red = cross_validate_model(lr_red, X_red_scaled, y_red, 'Red', 'Linear Regression', cv_folds=5, n_repeats=1)
+result_red = cross_validate_model(lr_red, X_red, y_red, 'Red', 'Linear Regression', cv_folds=5, n_repeats=1)
 all_results.append(result_red)
 
-lr_red.fit(X_red_scaled, y_red)
+lr_red.fit(X_red, y_red)
 
 print("\nCoefficients (trained on full dataset):")
 coef_df_red = pd.DataFrame({
@@ -51,7 +40,7 @@ print(coef_df_red.head(10).to_string(index=False))
 coef_df_red.to_csv('results/linear_coef_red.csv', index=False)
 print(f"\nCoefficients saved to results/linear_coef_red.csv")
 
-X_red_sm = sm.add_constant(X_red_scaled)
+X_red_sm = sm.add_constant(X_red)
 model_red_sm = sm.OLS(y_red, X_red_sm).fit()
 print("\n" + "=" * 40)
 print("Red Wine - Model Summary (Full Dataset)")
@@ -64,30 +53,19 @@ print(f"Prob (F-statistic): {model_red_sm.f_pvalue:.4e}")
 joblib.dump(lr_red, 'models/linear_regression_red.pkl')
 print(f"\nModel saved to models/linear_regression_red.pkl")
 
-# 2. WHITE WINE
+# 2. WHITE WINE - LINEAR REGRESSION
 print("\n" + "=" * 60)
 print("WHITE WINE - LINEAR REGRESSION WITH CROSS VALIDATION")
 print("=" * 60)
 
-df_white = pd.read_csv('data/winequality-white.csv', sep=';')
-X_white = df_white.drop('quality', axis=1)
-y_white = df_white['quality']
-features_white = X_white.columns.tolist()
-
-print(f"\n=== WHITE WINE ===")
-print(f"Dataset shape: {df_white.shape}")
-print(f"Quality range: {y_white.min()} - {y_white.max()}")
-print(f"Features: {features_white}")
-
-scaler_white = StandardScaler()
-X_white_scaled = scaler_white.fit_transform(X_white)
+X_white, y_white, features_white = load_and_standardize_data('white')
 
 lr_white = LinearRegression()
 
-result_white = cross_validate_model(lr_white, X_white_scaled, y_white, 'White', 'Linear Regression', cv_folds=5, n_repeats=1)
+result_white = cross_validate_model(lr_white, X_white, y_white, 'White', 'Linear Regression', cv_folds=5, n_repeats=1)
 all_results.append(result_white)
 
-lr_white.fit(X_white_scaled, y_white)
+lr_white.fit(X_white, y_white)
 
 print("\nCoefficients (trained on full dataset):")
 coef_df_white = pd.DataFrame({
@@ -99,7 +77,7 @@ print(coef_df_white.head(10).to_string(index=False))
 coef_df_white.to_csv('results/linear_coef_white.csv', index=False)
 print(f"\nCoefficients saved to results/linear_coef_white.csv")
 
-X_white_sm = sm.add_constant(X_white_scaled)
+X_white_sm = sm.add_constant(X_white)
 model_white_sm = sm.OLS(y_white, X_white_sm).fit()
 print("\n" + "=" * 40)
 print("White Wine - Model Summary (Full Dataset)")
@@ -112,7 +90,6 @@ print(f"Prob (F-statistic): {model_white_sm.f_pvalue:.4e}")
 joblib.dump(lr_white, 'models/linear_regression_white.pkl')
 print(f"\nModel saved to models/linear_regression_white.pkl")
 
-# 3. SUMMARY
 print("\n" + "=" * 60)
 print("SUMMARY - CROSS VALIDATION RESULTS")
 print("=" * 60)
