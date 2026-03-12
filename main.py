@@ -89,6 +89,7 @@ def verify_data():
     print(f"Target variable (quality) range: {y_white.min():.0f} - {y_white.max():.0f}")
     
     print("\nAll functions ready to use.")
+
     return True
 
 if __name__ == "__main__":

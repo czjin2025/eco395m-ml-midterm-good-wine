@@ -30,7 +30,7 @@ rf_red = RandomForestRegressor(
 result_red = cross_validate_model(
     rf_red, X_red, y_red, 
     'Red', 'Random Forest', 
-    cv_folds=5, n_repeats=1
+    cv_folds=5
 )
 all_results.append(result_red)
 
@@ -65,7 +65,7 @@ rf_white = RandomForestRegressor(
 result_white = cross_validate_model(
     rf_white, X_white, y_white, 
     'White', 'Random Forest', 
-    cv_folds=5, n_repeats=1
+    cv_folds=5
 )
 all_results.append(result_white)
 
