@@ -24,7 +24,6 @@ X_red = df_red.drop('quality', axis=1)
 y_red = df_red['quality']
 features_red = X_red.columns.tolist()
 
-print(f"\nRed Wine”)
 print(f"Dataset shape: {df_red.shape}")
 print(f"Quality range: {y_red.min()} - {y_red.max()}")
 print(f"Features: {features_red}")
@@ -68,7 +67,6 @@ joblib.dump(rf_red, 'models/random_forest_red.pkl')
 print(f"Model saved to models/random_forest_red.pkl")
 
 print("\n" + "=" * 60)
-print("White Wine: Random Forest with Cross Validation”)
 print("=" * 60)
 
 df_white = pd.read_csv('data/winequality-white.csv', sep=';')
@@ -76,7 +74,6 @@ X_white = df_white.drop('quality', axis=1)
 y_white = df_white['quality']
 features_white = X_white.columns.tolist()
 
-print(f"\nWhite Wine”)
 print(f"Dataset shape: {df_white.shape}")
 print(f"Quality range: {y_white.min()} - {y_white.max()}")
 print(f"Features: {features_white}")
