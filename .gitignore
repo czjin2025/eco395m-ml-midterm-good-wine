@@ -22,8 +22,10 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Models and results - not needed for reproducibility
+# Models - too large, don't commit
 models/
-results/
 *.pkl
-*.csv
+
+# Results and figures - commit these in comparison branch
+results/
+figures/
