@@ -32,7 +32,7 @@ def load_and_standardize_data(wine_type='red'):
     
     return X_scaled, y, feature_names
 
-def cross_validate_model(model, X, y, wine_type, model_name, cv_folds=5, n_repeats=1):
+def cross_validate_model(model, X, y, wine_type, model_name, cv_folds=5, n_repeats=20):
     mad_scorer = make_scorer(mean_absolute_error)
     mse_scorer = make_scorer(mean_squared_error)
     
