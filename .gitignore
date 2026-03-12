@@ -22,10 +22,6 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Models - too large, don't commit
+# Models 
 models/
 *.pkl
-
-# Results and figures - commit these in comparison branch
-results/
-figures/
