@@ -73,15 +73,32 @@ Analyzing feature importance across models reveals the key drivers of wine quali
 **alcohol** is consistently the most important predictor, confirming the oenological theory that higher alcohol content is associated with higher quality. **Volatile acidity**, **density**, **residual sugar**, and **sulphates** also play significant roles.
 
 ### 4.3. Comparison with Original Paper
-Our results align well with the findings of Cortez et al. (2009). Their reported MAD for Linear Regression was ~0.50 for red wine and ~0.59 for white wine, which closely matches our results (0.505 and 0.586). Our extension with tree-based models (XGBoost, Random Forest) shows improved performance, particularly for red wine, suggesting that non-linear relationships are important.
+Our results align well with the findings of Cortez et al. (2009). Their reported MAD for Linear Regression was ~0.50 for red wine and ~0.59 for white wine, which closely matches our results (0.505 and 0.586).
+
+**Why are some results different?** 
+The original paper concluded that SVM was the best model overall. However, our study includes two additional models not tested in the original paper: **XGBoost and Random Forest**. These tree-based ensemble methods capture non-linear relationships better than SVM, leading to improved performance:
+- For red wine, XGBoost (MAD=0.411) outperforms the paper's SVM (0.46)
+- For white wine, Random Forest (MAD=0.434) outperforms the paper's SVM (0.517)
+
+This demonstrates that modern tree-based models can achieve even better accuracy than the methods available in 2009.
 
 ## 5. Recommendations and Conclusion
 
-Based on the analysis, the recommendation for the best model depends on the wine type:
-*   **For Red Wine:** **XGBoost** achieves the lowest MAD (0.411) and is the top performer by this key metric.
-*   **For White Wine:** **Random Forest** demonstrates the best overall performance with the lowest MAD (0.434) and RMSE (0.609).
+Based on our analysis, we make the following **clear recommendations**:
 
-These tree-based ensemble methods capture non-linear interactions that simpler models like Linear Regression miss, leading to more accurate predictions. The analysis confirms the primary importance of alcohol content in determining wine quality.
+| Wine Type | **Recommended Model** | Key Metric (MAD) |
+|-----------|----------------------|------------------|
+| **Red Wine** | **XGBoost** | 0.411 |
+| **White Wine** | **Random Forest** | 0.434 |
+
+**Why these models?**
+- Tree-based models (XGBoost, Random Forest) consistently outperform linear models and SVM
+- They capture complex non-linear relationships that simpler models miss
+- The choice differs by wine type because red and white wines have different chemical compositions
+
+If interpretability is the top priority, Linear Regression remains an option, but with a significant trade-off in accuracy (about 20% higher error).
+
+The analysis confirms that **alcohol content** is the single most important predictor of wine quality across all models.
 
 ## 6. Reproducibility
 
