@@ -22,20 +22,19 @@ svm_red = SVR(
     kernel='rbf',
     C=1.0,
     gamma='scale',
-    epsilon=0.1,
+    epsilon=0.01,
     cache_size=200
 )
 
 result_red = cross_validate_model(
     svm_red, X_red, y_red, 
     'Red', 'SVM', 
-    cv_folds=5, n_repeats=1
+    cv_folds=5
 )
 all_results.append(result_red)
 
 svm_red.fit(X_red, y_red)
-
-joblib.dump(svm_red, 'models/svm_red.pkl')
+joblib.dump(svm_red, 'models/svm_red_tuned.pkl')
 
 print("White Wine: SVM with Cross Validation")
 
@@ -52,7 +51,7 @@ svm_white = SVR(
 result_white = cross_validate_model(
     svm_white, X_white, y_white, 
     'White', 'SVM', 
-    cv_folds=5, n_repeats=1
+    cv_folds=5
 )
 all_results.append(result_white)
 
