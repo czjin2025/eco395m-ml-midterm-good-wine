@@ -141,3 +141,11 @@ This single script will:
 
 All paths used in the code are relative, ensuring the analysis runs correctly on any machine once the repository is cloned.
 
+## 7. Limitations
+
+- **Region-specific data**: The dataset only includes wines from the Vinho Verde region in Portugal. Results may not generalize to wines from other regions.
+
+- **Subjective quality scores**: Wine quality is rated by human experts, which is inherently subjective. Different tasters might give different scores to the same wine.
+
+- **Missing variables**: Important factors like grape variety, fruit quality, harvest year, and aging process are not included in the dataset. These could influence wine quality in ways our models cannot capture.
+
