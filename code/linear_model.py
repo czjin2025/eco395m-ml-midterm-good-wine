@@ -27,17 +27,14 @@ def run_linear_regression(wine_type):
     
     lr.fit(X_scaled, y)
     
-    # Save coefficients
     coef_df = pd.DataFrame({'feature': features, 'coefficient': lr.coef_})
     coef_df = coef_df.sort_values('coefficient', key=abs, ascending=False)
     coef_df.to_csv(f'results/linear_coef_{wine_type}.csv', index=False)
     
-    # Save model
     joblib.dump(lr, f'models/linear_regression_{wine_type}.pkl')
     
     return result
 
-# Run both
 all_results = []
 for wine in ['red', 'white']:
     all_results.append(run_linear_regression(wine))
